@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="employee_ws" targetNamespace="http://www.mikew.org/employee_ws/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.mikew.org/employee_ws/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.mikew.org/employee_ws/">
+      <xsd:element name="updEmployee">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="in" type="tns:Employee"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="updEmployeeResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="tns:Employee"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="Employee">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" name="id" type="xsd:int"/>
+          <xsd:element name="firstName" type="xsd:string"/>
+          <xsd:element name="lastName" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="age" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="updEmployeeResponse">
+    <wsdl:part name="parameters" element="tns:updEmployeeResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updEmployeeRequest">
+    <wsdl:part name="parameters" element="tns:updEmployee">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="employee_ws">
+    <wsdl:operation name="updEmployee">
+      <wsdl:input message="tns:updEmployeeRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:updEmployeeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="employee_wsSOAP" type="tns:employee_ws">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="updEmployee">
+      <soap:operation soapAction="http://www.mikew.org/employee_ws/updEmployee"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="employee_ws">
+    <wsdl:port name="employee_wsSOAP" binding="tns:employee_wsSOAP">
+      <soap:address location="http://kazumi:1222/mockemployee_wsSOAP"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
