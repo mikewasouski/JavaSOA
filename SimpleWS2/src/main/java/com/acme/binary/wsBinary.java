@@ -34,18 +34,16 @@ public class wsBinary extends RouteBuilder{
 			List<Interceptor<? extends org.apache.cxf.message.Message>> lst = new ArrayList<Interceptor<? extends org.apache.cxf.message.Message>>();
 			//lst.add(new CxfInterceptor());
 			
-			Map<String, Object> inProperties = new HashMap<>();
-			//inProperties.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-			inProperties.put(WSHandlerConstants.ACTION, WSHandlerConstants.SIGNATURE);
-			inProperties.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
-			inProperties.put(WSHandlerConstants.PW_CALLBACK_CLASS, ClientPasswordCallback.class.getName());
-			
-			//inProperties.put("action", "UsernameTokenNoPassword");
-
-			//inProperties.put("passwordType", "PasswordText");
-			//inProperties.put("user", "usr");
-			
-			WSS4JInInterceptor inInterceptor = new WSS4JInInterceptor(inProperties);
+			Map<String, Object> serverInProps = new HashMap<>();
+			serverInProps.put(WSHandlerConstants.SIG_ALGO, "http://www.w3.org/2000/09/xmldsig#rsa-sha1" ); 
+			serverInProps.put(WSHandlerConstants.SIG_C14N_ALGO, "http://www.w3.org/2001/10/xml-exc-c14n#" ); 
+			serverInProps.put(WSHandlerConstants.ENC_DIGEST_ALGO, "http://www.w3.org/2000/09/xmldsig#sha1" );
+			serverInProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.SIGNATURE);
+		    serverInProps.put(WSHandlerConstants.SIG_PROP_FILE, "server_key.properties");
+		    serverInProps.put(WSHandlerConstants.SIG_KEY_ID, "DirectReference");
+		    
+		    
+			WSS4JInInterceptor inInterceptor = new WSS4JInInterceptor(serverInProps);
 			lst.add(inInterceptor);
 			
 			CxfEndpoint endpointFrom = new CxfEndpoint();
@@ -54,6 +52,7 @@ public class wsBinary extends RouteBuilder{
 		    endpointFrom.setWsdlURL("src/main/resources/employee.wsdl");
 		    endpointFrom.setAddress("http://localhost:9000/binary");
 		    endpointFrom.setServiceClass("org.mikew.employee_ws.EmployeeWs");
+		     
 		    
 		    getContext().getRegistry().bind("cxfBinary", endpointFrom);
 		    from("cxf:bean:cxfBinary").process( new Processor(){
@@ -70,7 +69,6 @@ public class wsBinary extends RouteBuilder{
 				}
 			)
 		    .to("mock:test");
-		    
 		   
 		}
 		
