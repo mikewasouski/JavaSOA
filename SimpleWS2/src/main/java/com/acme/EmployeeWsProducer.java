@@ -23,6 +23,8 @@ import org.apache.cxf.transport.http.auth.HttpAuthHeader;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.wss4j.common.token.BinarySecurity;
+import org.apache.wss4j.dom.WSConstants;
+import org.apache.wss4j.dom.handler.WSHandlerConstants;
 import org.mikew.employee_ws.Employee;
 import org.springframework.stereotype.Component;
 
@@ -42,10 +44,10 @@ public class EmployeeWsProducer extends RouteBuilder {
 		//lst.add(new CxfInterceptor());
 		
 		Map<String, Object> inProperties = new HashMap<>();
-		inProperties.put("action", "UsernameTokenNoPassword");
-
-		//inProperties.put("passwordType", "PasswordText");
-		inProperties.put("user", "usr");
+		inProperties.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+		inProperties.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+		inProperties.put(WSHandlerConstants.PW_CALLBACK_CLASS, ClientPasswordCallback.class.getName());
+		
 		WSS4JInInterceptor inInterceptor = new WSS4JInInterceptor(inProperties);
 		lst.add(inInterceptor);
 		
